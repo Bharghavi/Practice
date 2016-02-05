@@ -9,7 +9,7 @@ import java.util.List;
 public class Queue<T> {
 
     private LLNode<T> head;
-    private LLNode<T> tail;
+    private LLNode<T> marker;
 
     public Queue(T data) {
         head = new LLNode<T>(data);
@@ -28,23 +28,25 @@ public class Queue<T> {
         }
     }
 
-    public void setTail(){
+    public void markEndAsMarker(){
         if (head != null) {
             LLNode<T> currentNode = head;
             while (currentNode.next != null) {
                 currentNode = currentNode.next;
             }
-            tail = currentNode;
+            marker = currentNode;
         }
     }
 
-    public T getTail() {
-        if (tail == null)
+    public T getMarker() {
+        if (marker == null)
             return null;
-        return tail.data;
+        return marker.data;
     }
 
     public T deque(){
+    	if (!this.hasData())
+    		return null;
         LLNode<T> oldHead = head;
         head = head.next;
         return oldHead.data;
@@ -58,23 +60,11 @@ public class Queue<T> {
         return head!=null;
     }
 
-   /* public void mergeQueue(Queue queue) {
-        if (this.head == null)
-            this.head = queue.head;
-        else {
-            LLNode<T> currentNode = head;
-            while (currentNode.next != null) {
-                currentNode = currentNode.next;
-            }
-            currentNode.next = queue.head;
-        }
-    }*/
-
     public List<T> getAllElementsAsList(){
         List<T> allElements = new ArrayList<T>();
         if (head != null) {
             LLNode<T> currentNode = head;
-            while (currentNode.next != null) {
+            while (currentNode != null) {
                 allElements.add(currentNode.data);
                 currentNode = currentNode.next;
             }

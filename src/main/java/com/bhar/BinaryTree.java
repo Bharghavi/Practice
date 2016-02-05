@@ -54,8 +54,15 @@ public class BinaryTree {
                 queue.enque(current.right);
         }
     }
+    
+    public void displayNodesFrom(int data, int d) {
+    	List<Node> result = getNodesFrom(data, d);
+    	for (Node n : result) {
+    		System.out.println(n.data);
+    	}
+    }
 
-    public List getNodesFrom(int data, int d) {
+    private List getNodesFrom(int data, int d) {
         Node find = findNode(data);
         if (find == null)
             return new ArrayList();
@@ -69,14 +76,17 @@ public class BinaryTree {
         Queue<Node> queue = new Queue<Node>(node);
         int i = 0;
         if (d > 0) {
-            Node current = queue.deque();
-            while (i < d ) {
-                while (current != queue.getTail()) {
-                    queue.enque(current.left);
-                    queue.enque(current.right);
-                    current = queue.deque();
-                }
-                queue.setTail();
+            while (i < d && queue.hasData()) {
+            	queue.markEndAsMarker();
+            	Node current;
+               do {
+            	   current = queue.deque();
+                   if (current.left != null)
+                	   queue.enque(current.left);
+                   if (current.right != null)
+                	   queue.enque(current.right);
+                } while (current != queue.getMarker() && queue.hasData());
+                queue.markEndAsMarker();
                 i++;
             }
         }
@@ -84,23 +94,29 @@ public class BinaryTree {
     }
 
     private List getOtherNodesFrom(Node node, int d) {
+    	List<Node> path = getPathFromRoot(node);
         return new ArrayList();
     }
 
     private List getPathFromRoot(Node node) {
         Stack<Node> stack = new Stack<Node>();
         stack.push(rootNode);
-        Node top = rootNode;
-        while (top != node) {
-            while (node.left != null)
-                stack.push(node.left);
-            if (node.right != null)
-                stack.push(node.right);
-            else
-                stack.pop();
-            top = stack.getTop();
-        }
-        return stack.getAllElementsAsList();
+        return getPathFromNode(rootNode, node, stack);
+    }
+    
+    private List getPathFromNode(Node current, Node find, Stack<Node> stack) {
+    	if (current.data != find.data) {
+    		if (current.left != null) {
+    			stack.push(current.left);
+    			getPathFromNode(current.left, find, stack);
+    		}
+    		if (current.right != null) {
+    			stack.push(current.right);
+    			getPathFromNode(current.right, find, stack);
+    		}
+    		stack.pop();  		
+    	} 
+    	return stack.getAllElementsAsList();
     }
 
     private Node findNode(int data){

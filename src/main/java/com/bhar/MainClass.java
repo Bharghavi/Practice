@@ -27,6 +27,6 @@ public class MainClass {
         }
         //root.rotate();
         //root.printBFT();
-        root.getNodesFrom(1,2);
+        root.displayNodesFrom(7,2);
     }
 }

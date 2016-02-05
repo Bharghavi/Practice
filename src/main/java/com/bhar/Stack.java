@@ -18,6 +18,10 @@ public class Stack<T> {
             top = newNode;
         }
     }
+    
+    public boolean isEmpty() {
+    	return top == null;
+    }
 
     public T getTop() {
         if (top != null)
@@ -28,15 +32,16 @@ public class Stack<T> {
     public T pop() {
         if (top == null)
             return null;
+        T result = top.data;
         top = top.next;
-        return top.data;
+        return result;
     }
 
     public List<T> getAllElementsAsList(){
         List<T> allElements = new ArrayList<T>();
         if (top != null) {
             LLNode<T> currentNode = top;
-            while (currentNode.next != null) {
+            while (currentNode != null) {
                 allElements.add(currentNode.data);
                 currentNode = currentNode.next;
             }
