@@ -1,32 +1,23 @@
 package com.bhar;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Scanner;
 
 /**
  * Created by amrk7 on 2/3/2016.
  */
 public class MainClass {
-    public static void main(String[] arg) {
-        System.out.println("Enter root");
+    public static void main(String[] arg) throws IOException {
         Scanner scanner = new Scanner(System.in);
-        int rootValue = scanner.nextInt();
-        BinaryTree root = new BinaryTree(rootValue);
-        Queue<Node> queue = new Queue<Node>(root.getRoot());
-
-        while (queue.hasData()) {
-            Node current = queue.deque();
-            System.out.println("Enter left of " + current.data);
-            int left = scanner.nextInt();
-            if (left != -1) {
-                queue.enque(root.insert(current, true, left));
-            }
-            System.out.println("Enter right of " + current.data);
-            int right = scanner.nextInt();
-            if (right != -1)
-                queue.enque(root.insert(current, false, right));
-        }
+        BinaryTree root = BinaryTree.loadFromFile(new File("/Users/amruth.s/Documents/personal/Practice/src/main/java/com/bhar/input.data"));
+        //System.out.print("Enter node to be found: " );
+        //int data = scanner.nextInt();
+        //System.out.println("Enter distance: " );
+        //int distance = scanner.nextInt();
         //root.rotate();
         //root.printBFT();
-        root.displayNodesFrom(7,2);
+        //root.displayNodesFrom(data,distance);
+        System.out.print("Deepest path : " + root.getDeepestPath());
     }
 }

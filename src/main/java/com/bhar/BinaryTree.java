@@ -1,7 +1,10 @@
 package com.bhar;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.*;
 
 /**
  * Created by amrk7 on 2/2/2016.
@@ -62,61 +65,93 @@ public class BinaryTree {
     	}
     }
 
-    private List getNodesFrom(int data, int d) {
+    private List<Node> getNodesFrom(int data, int d) {
         Node find = findNode(data);
         if (find == null)
-            return new ArrayList();
+            return new ArrayList<Node>();
         List<Node> result = new ArrayList<Node>();
-        result.addAll(getChildNodesFrom(find, d));
+        result.addAll(getChildNodes(find, d));
         result.addAll(getOtherNodesFrom(find, d));
         return result;
     }
 
-    private List getChildNodesFrom(Node node, int d) {
+    private List<Node> getChildNodes(Node node, int d) {
         Queue<Node> queue = new Queue<Node>(node);
+        queue.markEnd();
         int i = 0;
-        if (d > 0) {
-            while (i < d && queue.hasData()) {
-            	queue.markEndAsMarker();
-            	Node current;
-               do {
-            	   current = queue.deque();
-                   if (current.left != null)
-                	   queue.enque(current.left);
-                   if (current.right != null)
-                	   queue.enque(current.right);
-                } while (current != queue.getMarker() && queue.hasData());
-                queue.markEndAsMarker();
-                i++;
-            }
+        while (i < d && queue.hasData()) {
+            Node current;
+           do {
+               current = queue.deque();
+               if (current.left != null)
+                   queue.enque(current.left);
+               if (current.right != null)
+                   queue.enque(current.right);
+            } while (!current.equals(queue.getMarker()) && queue.hasData());
+            queue.markEnd();
+            i++;
         }
         return queue.getAllElementsAsList();
     }
 
-    private List getOtherNodesFrom(Node node, int d) {
-    	List<Node> path = getPathFromRoot(node);
-        return new ArrayList();
+    private List<Node> getOtherNodesFrom(final Node node, final int d) {
+        final List<Node> result = new ArrayList<Node>();
+        final List<Node> path = getPathFromRoot(node);
+        int i=1;
+        for(Node parentNode : path.subList(1, d>path.size()? path.size() : d)) {
+            Node disconnectedSubTree;
+            if(node.equals(parentNode.left)) {
+                disconnectedSubTree = parentNode.left;
+                parentNode.left = null;
+                result.addAll(
+                        getChildNodes(
+                                parentNode,
+                                d-i
+                        )
+                );
+                parentNode.left = disconnectedSubTree;
+            } else if (node.equals(parentNode.right)) {
+                disconnectedSubTree = parentNode.right;
+                parentNode.right = null;
+                result.addAll(
+                        getChildNodes(
+                                parentNode,
+                                d-i
+                        )
+                );
+                parentNode.right = disconnectedSubTree;
+            }
+            i--;
+
+        }
+        return result;
     }
 
-    private List getPathFromRoot(Node node) {
-        Stack<Node> stack = new Stack<Node>();
+    private List<Node> getPathFromRoot(Node node) {
+        final Stack<Node> stack = new Stack<Node>();
         stack.push(rootNode);
-        return getPathFromNode(rootNode, node, stack);
+        if (getPathFromNode(rootNode, node, stack))
+            return stack.getAllElementsAsList();
+        return new ArrayList<Node>();
     }
     
-    private List getPathFromNode(Node current, Node find, Stack<Node> stack) {
+    private boolean getPathFromNode(Node current, Node find, Stack<Node> stack) {
     	if (current.data != find.data) {
     		if (current.left != null) {
     			stack.push(current.left);
-    			getPathFromNode(current.left, find, stack);
+    			if (getPathFromNode(current.left, find, stack))
+                    return true;
     		}
     		if (current.right != null) {
     			stack.push(current.right);
-    			getPathFromNode(current.right, find, stack);
+    			if (getPathFromNode(current.right, find, stack))
+                    return true;
     		}
     		stack.pop();  		
-    	} 
-    	return stack.getAllElementsAsList();
+    	}else {
+            return true;
+        }
+    	return false;
     }
 
     private Node findNode(int data){
@@ -130,5 +165,78 @@ public class BinaryTree {
         }
         return null;
     }
+
+    public static BinaryTree loadFromFile(File file) throws IOException {
+        Map<Integer, List<Integer>> rawMap = new HashMap<Integer, List<Integer>>();
+        BufferedReader br = new BufferedReader(new FileReader(file));
+        for(String line; (line = br.readLine()) != null; ) {
+            String[] relationShip = line.split(":");
+            final List<Integer> children = new ArrayList<Integer>();
+            for(String child : relationShip[1].split(",")) {
+                children.add(Integer.parseInt(child));
+            }
+            rawMap.put(Integer.parseInt(relationShip[0]), children);
+        }
+        return loadFromMap(rawMap);
+    }
+
+    public static BinaryTree loadFromMap(Map<Integer, List<Integer>> rawMap) {
+        final Iterator<Map.Entry<Integer, List<Integer>>> iterator = rawMap.entrySet().iterator();
+        final Map<Integer, Node> nodeReferences = new HashMap<Integer, Node>();
+        final Map.Entry<Integer, List<Integer>> firstRelation = iterator.next();
+        final BinaryTree tree = new BinaryTree(firstRelation.getKey());
+        final Node node = tree.getRoot();
+        nodeReferences.put(
+                firstRelation.getValue().get(0),
+                tree.insert(node, true, firstRelation.getValue().get(0))
+        );
+        if(firstRelation.getValue().size() > 1) {
+            nodeReferences.put(
+                    firstRelation.getValue().get(1),
+                    tree.insert(node, false, firstRelation.getValue().get(1))
+            );
+        }
+        while (iterator.hasNext()) {
+            Map.Entry<Integer, List<Integer>> relationShip = iterator.next();
+            final Integer parent = relationShip.getKey();
+            final List<Integer> children = relationShip.getValue();
+            Node targetNode = nodeReferences.get(parent);
+            nodeReferences.put(
+                    children.get(0),
+                    tree.insert(targetNode, true, children.get(0))
+            );
+            if(children.size() > 1) {
+                nodeReferences.put(
+                        children.get(1),
+                        tree.insert(targetNode, false, children.get(1))
+                );
+            }
+        }
+        return tree;
+    }
+
+    public int getDeepestPath() {
+        return getDeepestPathFrom(rootNode);
+    }
+
+    private int getDeepestPathFrom(Node node) {
+        int leftDepth = 0 , rightDepth = 0;
+
+        if (node == null || isLeaf(node))
+            return 0;
+
+        leftDepth = getDeepestPathFrom(node.left);
+        rightDepth = getDeepestPathFrom(node.right);
+
+        if (leftDepth > rightDepth)
+            return leftDepth+1;
+        else
+            return rightDepth +1;
+    }
+
+    private boolean isLeaf (Node node) {
+        return node.left == null && node.right == null;
+    }
+
 
 }

@@ -28,7 +28,7 @@ public class Queue<T> {
         }
     }
 
-    public void markEndAsMarker(){
+    public void markEnd(){
         if (head != null) {
             LLNode<T> currentNode = head;
             while (currentNode.next != null) {
