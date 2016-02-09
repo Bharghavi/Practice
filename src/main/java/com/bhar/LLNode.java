@@ -11,4 +11,12 @@ public class LLNode<T> {
         this.data = data;
         this.next = null;
     }
+
+    public LLNode() {
+    }
+
+    public void add(T data) {
+        LLNode<T> newNode = new LLNode<T>(data);
+        this.next = newNode;
+    }
 }

@@ -215,27 +215,77 @@ public class BinaryTree {
         return tree;
     }
 
-    public int getDeepestPath() {
-        return getDeepestPathFrom(rootNode);
+    public int getMaximumDepth() {
+       return getMaximumFrom(rootNode);
     }
 
-    private int getDeepestPathFrom(Node node) {
+    private int getMaximumFrom(Node node) {
         int leftDepth = 0 , rightDepth = 0;
-
         if (node == null || isLeaf(node))
             return 0;
+        leftDepth = getMaximumFrom(node.left);
+        rightDepth = getMaximumFrom(node.right);
 
-        leftDepth = getDeepestPathFrom(node.left);
-        rightDepth = getDeepestPathFrom(node.right);
-
-        if (leftDepth > rightDepth)
-            return leftDepth+1;
+        if (leftDepth > rightDepth) {
+            return leftDepth + 1;
+        }
         else
-            return rightDepth +1;
+            return rightDepth + 1;
     }
 
     private boolean isLeaf (Node node) {
         return node.left == null && node.right == null;
+    }
+
+    public void printDeepestPath() {
+        printList(getDeepestPathFrom(rootNode));
+    }
+
+    private void printList(List<Node> list) {
+        for (Node each : list)
+            System.out.print(each.data + " ");
+    }
+
+    private List<Node> getDeepestPathFrom(Node node){
+        List<Node> result = new ArrayList<Node>();
+        if (node == null)
+            return result;
+        List<Node> leftPath = getDeepestPathFrom(node.left);
+        List<Node> rightPath = getDeepestPathFrom(node.right);
+        if (leftPath.size() > rightPath.size()) {
+            result.add(node);
+            result.addAll(leftPath);
+        } else {
+            result.add(node);
+            result.addAll(rightPath);
+        }
+        return result;
+    }
+
+    public void printLongestDistance() {
+        List<Node> deepestBranch = getDeepestPathFrom(rootNode);
+        int longestDistance = 0;
+        for (Node node : deepestBranch) {
+            int nodeLength = getLongestDistanceFrom(node).size() - 1;
+            if (nodeLength> longestDistance)
+                longestDistance = nodeLength;
+        }
+        System.out.println("Longest distance: " + longestDistance);
+        //printList(getLongestDistanceFrom(rootNode));
+    }
+
+    private List<Node> getLongestDistanceFrom(Node node) {
+        List<Node> result = new ArrayList<Node>();
+        if (node == null)
+            return result;
+
+        List<Node> leftPath = getDeepestPathFrom(node.left);
+        List<Node> rightPath = getDeepestPathFrom(node.right);
+
+        result.addAll(leftPath);
+        result.add(node);
+        result.addAll(rightPath);
+        return result;
     }
 
 

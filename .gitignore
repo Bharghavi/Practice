@@ -4,3 +4,4 @@ target/*
 .idea/
 .project
 bhar-preparation.iml
+preparation.iml
