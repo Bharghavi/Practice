@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class MainClass {
     public static void main(String[] arg) throws IOException {
         Scanner scanner = new Scanner(System.in);
-        BinaryTree root = BinaryTree.loadFromFile(new File("C:\\Users\\amrk7\\Documents\\bhar\\Practice\\src\\main\\java\\com\\bhar\\input.data"));
+        //BinaryTree root = BinaryTree.loadFromFile(new File("C:\\Users\\amrk7\\Documents\\bhar\\Practice\\src\\main\\java\\com\\bhar\\input.data"));
         //System.out.print("Enter node to be found: " );
         //int data = scanner.nextInt();
         //System.out.println("Enter distance: " );
@@ -23,12 +23,17 @@ public class MainClass {
         root.printDeepestPath();
         root.printLongestDistance();*/
 
-        Graph graph = new Graph(5);
-        graph.addEdge(3,4);
+        Graph graph = new Graph(6);
+        graph.addEdge(0,1);
+        graph.addEdge(0,2);
+        graph.addEdge(1,3);
+        graph.addEdge(3,5);
+        graph.addEdge(1,4);
+       /* graph.addEdge(3,4);
         graph.addEdge(2,4);
         graph.addEdge(1,2);
         graph.addEdge(1,3);
-        graph.addEdge(1,0);
-        graph.printOrderOfExecution();
+        graph.addEdge(0,1);*/
+        graph.printOrdersOfExecution();
     }
 }

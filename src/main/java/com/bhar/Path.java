@@ -13,8 +13,21 @@ public class Path<T> {
         pathList = new ArrayList<T>();
     }
 
-    public Path(List<T> data) {
-        pathList = data;
+    public Path(List<T> list) {
+        pathList = list;
+    }
+
+    public Path(T data) {
+        pathList =  new ArrayList<T>();
+        pathList.add(data);
+    }
+
+    public void addData(T data) {
+        pathList.add(data);
+    }
+
+    public void addAll(List<T> list) {
+        pathList.addAll(list);
     }
 
 
