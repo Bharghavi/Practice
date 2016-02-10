@@ -288,5 +288,92 @@ public class BinaryTree {
         return result;
     }
 
+    public void printTreeTraversals() {
+        System.out.print("Inorder: ");
+        printList(inOrderTraversal(rootNode));
+        System.out.print("Pre order: ");
+        printList(preOrderTraversal(rootNode));
+        System.out.print("Post order: ");
+        printList(postOrderTraversal(rootNode));
+    }
+
+    public List<Node> inOrderTraversal() {
+        return inOrderTraversal(rootNode);
+    }
+
+    public List<Node> postOrderTraversal() {
+        return postOrderTraversal(rootNode);
+    }
+
+    public List<Node> preOrderTraversal() {
+        return preOrderTraversal(rootNode);
+    }
+
+    private List<Node> inOrderTraversal(Node node) {
+        List<Node> result = new ArrayList<Node>();
+        if (node.left != null)
+            result.addAll(inOrderTraversal(node.left));
+        result.add(node);
+        if (node.right != null)
+            result.addAll(inOrderTraversal(node.right));
+        return result;
+    }
+
+    private List<Node> preOrderTraversal(Node node) {
+        List<Node> result = new ArrayList<Node>();
+        result.add(node);
+        if (node.left != null)
+            result.addAll(preOrderTraversal(node.left));
+        if (node.right != null)
+            result.addAll(preOrderTraversal(node.right));
+        return result;
+    }
+
+    private List<Node> postOrderTraversal(Node node) {
+        List<Node> result = new ArrayList<Node>();
+        if (node.left != null)
+            result.addAll(postOrderTraversal(node.left));
+        if (node.right != null)
+            result.addAll(postOrderTraversal(node.right));
+        result.add(node);
+        return result;
+    }
+
+    public static Node constructTree(List<Node> postOrder, List<Node> inOrder) {
+        Node result = new Node();
+        result.data = postOrder.get(postOrder.size()-1).data;
+        int resultIndex = getIndexOf(result.data, inOrder);
+
+        if (resultIndex == -1)
+            return result;
+
+        if (resultIndex == 0) {
+            result.left = null;
+        } else {
+            List<Node> inOrderSubset = inOrder.subList(0,resultIndex);
+            List<Node> postOrderSubset = postOrder.subList(0, inOrderSubset.size());
+            result.left = constructTree(postOrderSubset, inOrderSubset);
+        }
+
+        if (resultIndex == inOrder.size()-1) {
+            result.right = null;
+        } else {
+            List<Node> inOrderSubset = inOrder.subList(resultIndex+1, inOrder.size());
+            //int beg = postOrder.size() > inOrderSubset.size()? postOrder.size() - inOrderSubset.size(): postOrder
+            List<Node> postOrderSubset = postOrder.subList(resultIndex, postOrder.size()-1);
+            result.right = constructTree(postOrderSubset, inOrderSubset);
+        }
+
+        return result;
+    }
+
+    private static int getIndexOf(int data, List<Node> list) {
+        for (int i =0 ; i<list.size(); i++){
+            if (list.get(i).data == data)
+                return i;
+        }
+        return -1;
+    }
+
 
 }
