@@ -24,6 +24,8 @@ public class BinaryTree {
     public Node insert(Node node, boolean isLeft, int data){
         Node newNode = new Node();
         newNode.data = data;
+        if (data == -1)
+            newNode = null;
         if (isLeft)
             node.left = newNode;
         else
@@ -359,7 +361,6 @@ public class BinaryTree {
             result.right = null;
         } else {
             List<Node> inOrderSubset = inOrder.subList(resultIndex+1, inOrder.size());
-            //int beg = postOrder.size() > inOrderSubset.size()? postOrder.size() - inOrderSubset.size(): postOrder
             List<Node> postOrderSubset = postOrder.subList(resultIndex, postOrder.size()-1);
             result.right = constructTree(postOrderSubset, inOrderSubset);
         }
@@ -373,6 +374,54 @@ public class BinaryTree {
                 return i;
         }
         return -1;
+    }
+
+    public void printBorderNodes() {
+        System.out.print("Border Nodes: ");
+        printList(getBorderNodes());
+    }
+
+    private List<Node> getBorderNodes() {
+        List<Node> result = new ArrayList<Node>();
+        result.addAll(getLeftBorder(rootNode));
+        result.addAll(getLeafNodes(rootNode));
+        result.addAll(getRightBorder(rootNode));
+        return result;
+    }
+
+    private List<Node> getLeftBorder(Node node) {
+        List<Node> result = new ArrayList<Node>();
+       if (node.left != null) {
+           result.add(node);
+           result.addAll(getLeftBorder(node.left));
+       } else if (node.right != null) {
+           result.add(node.right);
+           result.addAll(getLeftBorder(node.right));
+       }
+        return result;
+    }
+
+    private List<Node> getRightBorder(Node node) {
+        List<Node> result = new ArrayList<Node>();
+        if (node.right != null) {
+            result.addAll(getRightBorder(node.right));
+            result.add(node);
+        } else if (node.left != null) {
+            result.addAll(getRightBorder(node.left));
+            result.add(node);
+        }
+        return result;
+    }
+
+    private List<Node> getLeafNodes(Node node) {
+        List<Node> result = new ArrayList<Node>();
+        if (node.left != null)
+            result.addAll(getLeafNodes(node.left));
+        if (node.right != null)
+            result.addAll(getLeafNodes(node.right));
+        if (node.left == null && node.right == null)
+            result.add(node);
+        return result;
     }
 
 
