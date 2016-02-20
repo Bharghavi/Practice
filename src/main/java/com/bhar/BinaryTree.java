@@ -218,15 +218,15 @@ public class BinaryTree {
     }
 
     public int getMaximumDepth() {
-       return getMaximumFrom(rootNode);
+       return getMaximumDepthFrom(rootNode);
     }
 
-    private int getMaximumFrom(Node node) {
+    private int getMaximumDepthFrom(Node node) {
         int leftDepth = 0 , rightDepth = 0;
         if (node == null || isLeaf(node))
             return 0;
-        leftDepth = getMaximumFrom(node.left);
-        rightDepth = getMaximumFrom(node.right);
+        leftDepth = getMaximumDepthFrom(node.left);
+        rightDepth = getMaximumDepthFrom(node.right);
 
         if (leftDepth > rightDepth) {
             return leftDepth + 1;
@@ -422,6 +422,64 @@ public class BinaryTree {
         if (node.left == null && node.right == null)
             result.add(node);
         return result;
+    }
+
+    public static void printTree(Node node) {
+        System.out.print(node.data + ":");
+        if (node.left == null)
+            System.out.print("-1,");
+        else
+            System.out.print(node.left.data + ",");
+        if (node.right == null)
+            System.out.print("-1");
+        else
+            System.out.print(node.right.data);
+        System.out.println();
+        if (node.left != null)
+            printTree(node.left);
+        if (node.right != null)
+            printTree(node.right);
+    }
+
+
+    public Node balanceBinaryTree() {
+        return balanceTree(rootNode);
+    }
+
+
+    private Node balanceTree(Node node) {
+        int balanceFactor = getBalanceFactor(node);
+        if (node == null || (balanceFactor <= -1 && balanceFactor >= 1))
+            return node;
+        node.left = balanceTree(node.left);
+        node.right = balanceTree(node.right);
+        if (balanceFactor > 0)
+            node = rotateRight(node);
+        else
+            node = rotateLeft(node);
+        return node;
+    }
+
+    private Node rotateRight(Node node) {
+        Node rightChild = node.right;
+        node.right = rightChild.left;
+        rightChild.left = node;
+        return balanceTree(rightChild);
+    }
+
+    private Node rotateLeft(Node node) {
+        Node leftChild = node.left;
+        node.left = leftChild.right;
+        leftChild.right = node;
+        return balanceTree(leftChild);
+    }
+
+    private int getBalanceFactor(Node aNode) {
+        if (aNode == null) return 0;
+        int leftDepth = getMaximumDepthFrom(aNode.left);
+        int rightDepth = getMaximumDepthFrom(aNode.right);
+        int balanceFactor = leftDepth - rightDepth;
+        return balanceFactor;
     }
 
 

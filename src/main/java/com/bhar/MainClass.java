@@ -12,8 +12,8 @@ import java.util.Scanner;
 public class MainClass {
     public static void main(String[] arg) throws IOException {
         Scanner scanner = new Scanner(System.in);
-        //BinaryTree root = BinaryTree.loadFromFile(new File("C:\\Users\\amrk7\\Documents\\bhar\\Practice\\src\\main\\java\\com\\bhar\\input.data"));
-       // BinaryTree root = BinaryTree.loadFromFile(new File("D:\\new\\Practice\\src\\main\\java\\com\\bhar\\input.data"));
+        BinaryTree root = BinaryTree.loadFromFile(new File("/Users/amruthkesav/bharghavi/Practice/src/main/java/com/bhar/input.data"));
+        //BinaryTree root = BinaryTree.loadFromFile(new File("D:\\new\\Practice\\src\\main\\java\\com\\bhar\\input.data"));
         //System.out.print("Enter node to be found: " );
         //int data = scanner.nextInt();
         //System.out.println("Enter distance: " );
@@ -28,6 +28,7 @@ public class MainClass {
         //root.printTreeTraversals();
         //Node constructedRoot = BinaryTree.constructTree(root.postOrderTraversal(), root.inOrderTraversal());
         //root.printBorderNodes();
+        BinaryTree.printTree(root.balanceBinaryTree());
 
        /*  Graph graph = new Graph(6);
         graph.addEdge(0,1);
@@ -42,18 +43,6 @@ public class MainClass {
         graph.addEdge(0,1);
         graph.printOrdersOfExecution();*/
 
-        List<Integer> array = new ArrayList<Integer>();
-        array.add(2);
-        array.add(1);
-        array.add(4);
-        array.add(6);
-        array.add(5);
-        array.add(8);
-        array.add(9);
-        array.add(10);
-        array.add(3);
 
-        ArraySolutions as = new ArraySolutions(array);
-        as.printLargestSubsequence();
     }
 }
