@@ -11,6 +11,10 @@ public class Queue<T> {
     private LLNode<T> head;
     private LLNode<T> marker;
 
+    public Queue() {
+        head = null;
+    }
+
     public Queue(T data) {
         head = new LLNode<T>(data);
     }
@@ -70,5 +74,16 @@ public class Queue<T> {
             }
         }
         return allElements;
+    }
+
+    public boolean contains(T data) {
+        LLNode<T> currentNode = head;
+
+        while (currentNode != null) {
+            if (currentNode.data == data)
+                return true;
+            currentNode = currentNode.next;
+        }
+        return false;
     }
 }
