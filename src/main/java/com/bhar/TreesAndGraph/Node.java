@@ -1,4 +1,4 @@
-package com.bhar;
+package com.bhar.TreesAndGraph;
 
 /**
  * Created by amrk7 on 2/2/2016.

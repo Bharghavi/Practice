@@ -1,4 +1,4 @@
-package com.bhar;
+package com.bhar.TreesAndGraph;
 
 import java.util.ArrayList;
 import java.util.List;

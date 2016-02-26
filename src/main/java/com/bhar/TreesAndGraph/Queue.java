@@ -1,4 +1,4 @@
-package com.bhar;
+package com.bhar.TreesAndGraph;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,9 +10,14 @@ public class Queue<T> {
 
     private LLNode<T> head;
     private LLNode<T> marker;
+    private int size;
 
     public Queue() {
         head = null;
+    }
+
+    public Queue(int size) {
+        this.size = size;
     }
 
     public Queue(T data) {
@@ -103,4 +108,15 @@ public class Queue<T> {
         }
         return deque();
     }
+
+    public boolean isFull() {
+        LLNode<T> currentNode = head;
+        int queueSize = 0;
+        while (currentNode != null) {
+            queueSize++;
+            currentNode = currentNode.next;
+        }
+        return queueSize>=size;
+    }
+
 }

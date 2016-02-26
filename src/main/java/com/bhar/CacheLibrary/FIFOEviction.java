@@ -1,7 +1,7 @@
 package com.bhar.CacheLibrary;
 
 
-import com.bhar.Queue;
+import com.bhar.TreesAndGraph.Queue;
 
 import java.util.List;
 
