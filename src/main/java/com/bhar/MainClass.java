@@ -1,6 +1,9 @@
 package com.bhar;
 
 import com.bhar.CacheLibrary.*;
+import com.bhar.LoggerLibrary.FileLogger;
+import com.bhar.LoggerLibrary.LogClient;
+import com.bhar.LoggerLibrary.Logger;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +48,7 @@ public class MainClass {
         graph.addEdge(0,1);
         graph.printOrdersOfExecution();*/
 
-        List<String> whiteList = new ArrayList<String>();
+       /* List<String> whiteList = new ArrayList<String>();
         whiteList.add("K1");
         whiteList.add("K2");
 
@@ -59,8 +62,20 @@ public class MainClass {
         cacheClient.put("K4", "V4", 2);
         cacheClient.put("K5", "V5", 2);
 
-        cacheClient.printCache();
+        cacheClient.printCache();*/
 
+        Logger<String> fileLogger = new FileLogger<String>("log.txt", 1);
+        LogClient<String> logClient = new LogClient<String>(fileLogger);
+
+        logClient.logError("E.line 1");
+        logClient.logError("E.line 2");
+        logClient.logError("E.line 3");
+        logClient.logError("E.line 4");
+
+        logClient.logWarning("W.line 1");
+        logClient.logWarning("W.line 2");
+        logClient.logWarning("W.line 3");
+        logClient.logWarning("W.line 4");
 
     }
 }
