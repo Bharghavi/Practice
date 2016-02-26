@@ -21,8 +21,6 @@ public class FIFOEviction<T> extends Eviction<T> {
 
     @Override
     protected void accessKey(T key) {
-        if (!queue.contains(key))
-            queue.enque(key);
     }
 
     @Override
@@ -33,7 +31,7 @@ public class FIFOEviction<T> extends Eviction<T> {
     }
 
     @Override
-    protected T removeElement() {
-        return queue.deque();
+    protected T getKeyToRemove() {
+        return queue.removeElementNotIn(whiteList);
     }
 }

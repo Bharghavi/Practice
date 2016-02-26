@@ -86,4 +86,21 @@ public class Queue<T> {
         }
         return false;
     }
+
+    public T removeElementNotIn(List<T> whitelist) {
+        if (head != null && !whitelist.contains(head.data)) {
+            return deque();
+        }
+        LLNode<T> currentNode = head;
+        T result;
+        while (currentNode != null && currentNode.next != null) {
+            if (!whitelist.contains(currentNode.next.data)) {
+                result = currentNode.next.data;
+                currentNode.next = currentNode.next.next;
+                return result;
+            }
+            currentNode = currentNode.next;
+        }
+        return deque();
+    }
 }

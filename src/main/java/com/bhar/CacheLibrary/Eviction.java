@@ -17,6 +17,6 @@ public abstract class Eviction<T> {
 
     abstract protected void accessKey(T key);
     abstract protected void addKey(T key);
-    abstract protected T removeElement();
+    abstract protected T getKeyToRemove();
 
 }

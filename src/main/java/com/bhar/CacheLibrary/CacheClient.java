@@ -14,8 +14,23 @@ public class CacheClient<T, R> {
     }
 
     public void put(T key, R value, int ttl){
-        if (keystore.isFull())
-            keystore.removeKey(eviction.removeElement());
+        if (keystore.isFull() && !keystore.containsKey(key))
+            keystore.removeKey(eviction.getKeyToRemove());
         keystore.put(key, value, ttl);
+        eviction.addKey(key);
+    }
+
+    public void putIfAbsent(T key, R value, int ttl) {
+        if (!keystore.containsKey(key))
+            put(key, value, ttl);
+    }
+
+    public R get(T key) {
+        eviction.accessKey(key);
+        return keystore.get(key);
+    }
+
+    public void printCache() {
+        keystore.printKeyValuePairs();
     }
 }

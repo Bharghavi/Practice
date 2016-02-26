@@ -1,17 +1,17 @@
 package com.bhar.CacheLibrary;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 /**
  * Created by amruthkesav on 24/02/16.
  */
 public class HashKeystore<T, R> extends Keystore<T,R> {
-    private int size;
     private Map<T, R> map;
 
     public HashKeystore(int size) {
-        this.size = size;
+        super(size);
         this.map = new HashMap<T, R>();
     }
 
@@ -35,5 +35,19 @@ public class HashKeystore<T, R> extends Keystore<T,R> {
         if (map.containsKey(key))
             map.remove(key);
 
+    }
+
+    @Override
+    protected void printKeyValuePairs() {
+        Iterator iterator = map.entrySet().iterator();
+        while (iterator.hasNext()) {
+           Map.Entry each = (Map.Entry) iterator.next();
+            System.out.println(each.getKey() + "->" + each.getValue());
+        }
+    }
+
+    @Override
+    protected boolean containsKey(T key) {
+        return map.containsKey(key);
     }
 }
