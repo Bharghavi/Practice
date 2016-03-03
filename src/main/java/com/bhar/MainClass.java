@@ -4,6 +4,7 @@ import com.bhar.CacheLibrary.*;
 import com.bhar.LoggerLibrary.FileLogger;
 import com.bhar.LoggerLibrary.LogClient;
 import com.bhar.LoggerLibrary.Logger;
+import com.bhar.ProducerConsumer.Launcher;
 
 import java.io.File;
 import java.io.IOException;
@@ -64,7 +65,7 @@ public class MainClass {
 
         cacheClient.printCache();*/
 
-        Logger<String> fileLogger = new FileLogger<String>("log.txt", 1);
+       /* Logger<String> fileLogger = new FileLogger<String>("log.txt", 1);
         LogClient<String> logClient = new LogClient<String>(fileLogger);
 
         logClient.logError("E.line 1");
@@ -75,7 +76,9 @@ public class MainClass {
         logClient.logWarning("W.line 1");
         logClient.logWarning("W.line 2");
         logClient.logWarning("W.line 3");
-        logClient.logWarning("W.line 4");
+        logClient.logWarning("W.line 4");*/
 
+        Launcher launcher = new Launcher("input.txt", "output.txt");
+        launcher.launch();
     }
 }
