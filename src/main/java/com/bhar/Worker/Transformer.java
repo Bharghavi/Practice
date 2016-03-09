@@ -5,4 +5,6 @@ package com.bhar.Worker;
  */
 public abstract class Transformer<T, R> {
     public abstract R transform(T data);
+    public abstract boolean isEndMarker(T data);
+    public abstract R getEndMarker();
 }

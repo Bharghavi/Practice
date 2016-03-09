@@ -1,5 +1,7 @@
 package com.bhar.ProducerConsumer;
 
+import com.bhar.Worker.DataInputStore;
+
 import java.io.*;
 import java.util.StringTokenizer;
 
@@ -31,22 +33,12 @@ public class Launcher {
         consumer.start(3);
     }
 
-    private void createThreadsAndStart(Runnable runnable, int numberOfThreads) {
-        Thread t;
-        for (int i = 0; i < numberOfThreads; i++) {
-            t = new Thread(runnable);
-            t.start();
-        }
-    }
-
-
     private ProducerFactory<String> getFileReaderProducer() {
         ProducerFactory<String> producerFactory = null;
         try {
             producerFactory = new ProducerFactory<String>() {
                 File file = new File(inputFileName);
                 BufferedReader reader = new BufferedReader(new FileReader(file));
-
                 @Override
                 public String produce() {
                     String str;

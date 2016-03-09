@@ -7,10 +7,19 @@ import com.bhar.TreesAndGraph.ThreadSafeQueue;
  */
 public class QueueStore<T> implements DataInputStore<T>, DataOutputStore<T>{
 
+    private static final int DEFAULT_QUEUE_SIZE = 5;
     ThreadSafeQueue<T> queue;
 
     public QueueStore(ThreadSafeQueue queue) {
         this.queue = queue;
+    }
+
+    public QueueStore(int queueSize) {
+        this.queue = new ThreadSafeQueue<T>(queueSize);
+    }
+
+    public QueueStore() {
+        this.queue = new ThreadSafeQueue<T>(DEFAULT_QUEUE_SIZE);
     }
 
     @Override

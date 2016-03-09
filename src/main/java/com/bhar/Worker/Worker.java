@@ -9,10 +9,20 @@ public class Worker<T, R> implements Runnable {
     DataOutputStore<R> outputStore;
     Transformer<T, R> transformer;
 
+    public Worker(DataInputStore<T> inputStore, DataOutputStore<R> outputStore, Transformer<T,R> transformer) {
+        this.inputStore = inputStore;
+        this.outputStore = outputStore;
+        this.transformer = transformer;
+    }
+
     @Override
     public void run() {
         T input = inputStore.getData();
-        R output = transformer.transform(input);
+        R output;
+        if (transformer.isEndMarker(input))
+          output = transformer.getEndMarker();
+        else
+         output = transformer.transform(input);
         outputStore.put(output);
     }
 
@@ -23,28 +33,4 @@ public class Worker<T, R> implements Runnable {
             t.start();
         }
     }
-
-    public static class WorkerBuilder<T, R> {
-        Worker<T, R> worker;
-
-        public WorkerBuilder inputStore(DataInputStore<T> inputStore) {
-            worker.inputStore = inputStore;
-            return this;
-        }
-
-        public WorkerBuilder outputStore(DataOutputStore<R> outputStore) {
-            worker.outputStore = outputStore;
-            return this;
-        }
-
-        public WorkerBuilder transformer(Transformer<T, R> transformer) {
-            worker.transformer = transformer;
-            return this;
-        }
-
-        public Worker build() {
-            return worker;
-        }
-    }
-
 }
