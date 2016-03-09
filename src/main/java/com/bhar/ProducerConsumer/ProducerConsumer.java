@@ -1,26 +1,24 @@
 package com.bhar.ProducerConsumer;
 
+import com.bhar.TreesAndGraph.ThreadSafeQueue;
+
 import java.util.concurrent.ArrayBlockingQueue;
 
 /**
  * Created by bharghav on 3/3/2016.
  */
 public class ProducerConsumer<T, R> implements Runnable{
-    ArrayBlockingQueue<T> inputQueue;
-    ArrayBlockingQueue<R> outputQueue;
+    ThreadSafeQueue<T> inputQueue;
+    ThreadSafeQueue<R> outputQueue;
     ProducerConsumerFactory<T,R> factory;
 
     public ProducerConsumer(int queueSize, ProducerConsumerFactory<T,R> factory) {
-        this.outputQueue = new ArrayBlockingQueue<R>(queueSize);
+        this.outputQueue = new ThreadSafeQueue<R>(queueSize);
         this.factory = factory;
     }
 
-    public void setInputQueue(ArrayBlockingQueue<T> inputQueue) {
+    public void setInputQueue(ThreadSafeQueue<T> inputQueue) {
         this.inputQueue = inputQueue;
-    }
-
-    public ArrayBlockingQueue<R> getOutputQueue() {
-        return outputQueue;
     }
 
     public ProducerConsumer pipe(ProducerConsumer producerConsumer) {
@@ -33,14 +31,22 @@ public class ProducerConsumer<T, R> implements Runnable{
         return consumer;
     }
 
+    public void start(int numberOfThreads) {
+        Thread t;
+        for (int i = 0; i < numberOfThreads; i++) {
+            t = new Thread(this);
+            t.start();
+        }
+    }
+
 
     @Override
     public void run() {
         R element = null;
         do{
             try {
-                element = factory.produceConsume(inputQueue.take());
-                outputQueue.put(element);
+                element = factory.produceConsume(inputQueue.deque());
+                outputQueue.enque(element);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -1,18 +1,18 @@
 package com.bhar.ProducerConsumer;
 
-import java.util.concurrent.ArrayBlockingQueue;
+import com.bhar.TreesAndGraph.ThreadSafeQueue;
 
 /**
  * Created by bharghav on 3/3/2016.
  */
 public class Producer<T> implements Runnable {
 
-    ArrayBlockingQueue<T> queue;
+    ThreadSafeQueue<T> queue;
     ProducerFactory<T> producerFactory;
     Status status;
 
     private Producer(ProducerBuilder<T> builder) {
-        this.queue = new ArrayBlockingQueue<T>(builder.queueSize);
+        this.queue = new ThreadSafeQueue<T>(builder.queueSize);
         this.producerFactory = builder.producerFactory;
         this.status = builder.status;
     }
@@ -39,11 +39,19 @@ public class Producer<T> implements Runnable {
             T product;
             do {
                 product = producerFactory.produce();
-                queue.put(product);
+                queue.enque(product);
                 status.update();
             } while (!producerFactory.isEndMarker(product));
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+    }
+
+    public void start(int numberOfThreads) {
+        Thread t;
+        for (int i = 0; i < numberOfThreads; i++) {
+            t = new Thread(this);
+            t.start();
         }
     }
 

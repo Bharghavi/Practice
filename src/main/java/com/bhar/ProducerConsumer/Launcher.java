@@ -1,13 +1,14 @@
 package com.bhar.ProducerConsumer;
 
 import java.io.*;
+import java.util.StringTokenizer;
 
 /**
  * Created by bharghav on 3/3/2016.
  */
 public class Launcher {
 
-    final String endOfFileMarker = "EOF";
+    final String END_OF_FILE = "EOF";
     String inputFileName;
     String outputFileName;
 
@@ -18,15 +19,16 @@ public class Launcher {
 
     public void launch() {
         Producer<String> producer = new Producer.ProducerBuilder<String>(getFileReaderProducer()).queueSize(3).status(new TaskUpdatedStatus()).build();
-        ProducerConsumer<String, String> producerConsumer = new ProducerConsumer<String, String>(3, getUpperCaseProcessor());
+        ProducerConsumer<String, String> producerConsumer = new ProducerConsumer<String, String>(3, getLowerCaseProcessor());
+        ProducerConsumer<String, String> upperCaseWord = new ProducerConsumer<String, String>(3, upperCaseWord());
         Consumer<String> consumer = new Consumer<>(getFileWriterConsumer());
 
-        producer.pipe(producerConsumer).pipe(consumer);
+        producer.pipe(producerConsumer).pipe(upperCaseWord).pipe(consumer);
 
-        createThreadsAndStart(producer, 1);
-        createThreadsAndStart(producerConsumer, 1);
-        createThreadsAndStart(consumer, 1);
-        producer.printStatus();
+        producer.start(3);
+        producerConsumer.start(3);
+        upperCaseWord.start(3);
+        consumer.start(3);
     }
 
     private void createThreadsAndStart(Runnable runnable, int numberOfThreads) {
@@ -52,16 +54,16 @@ public class Launcher {
                         if ((str = reader.readLine()) != null)
                             return str;
                         else
-                            return endOfFileMarker;
+                            return END_OF_FILE;
                     } catch (IOException e) {
                         e.printStackTrace();
-                        return endOfFileMarker;
+                        return END_OF_FILE;
                     }
                 }
 
                 @Override
                 public boolean isEndMarker(String element) {
-                    return endOfFileMarker.equals(element);
+                    return END_OF_FILE.equals(element);
                 }
             };
 
@@ -71,18 +73,43 @@ public class Launcher {
         return producerFactory;
     }
 
-    private ProducerConsumerFactory<String, String> getUpperCaseProcessor() {
+    private ProducerConsumerFactory<String, String> getLowerCaseProcessor() {
         ProducerConsumerFactory<String, String> factory = new ProducerConsumerFactory<String, String>() {
             @Override
             public String produceConsume(String inputElement) {
-                if (inputElement != null)
-                    return inputElement.toUpperCase();
-                return null;
+                if (inputElement == null || END_OF_FILE.equals(inputElement))
+                    return inputElement;
+                return inputElement.toLowerCase();
             }
 
             @Override
             public boolean isEndMarker(String element) {
-                return element == null || endOfFileMarker.equals(element);
+                return element == null || END_OF_FILE.equals(element);
+            }
+        };
+        return factory;
+    }
+
+    private ProducerConsumerFactory<String, String> upperCaseWord() {
+        ProducerConsumerFactory<String, String> factory = new ProducerConsumerFactory<String, String>() {
+            @Override
+            public String produceConsume(String inputElement) {
+                if (inputElement == null || END_OF_FILE.equals(inputElement))
+                    return inputElement;
+                StringBuilder outputString = new StringBuilder();
+                StringTokenizer tokens = new StringTokenizer(inputElement);
+                while (tokens.hasMoreElements()) {
+                    String eachToken = tokens.nextToken();
+                    outputString.append(eachToken.substring(0, 1).toUpperCase());
+                    outputString.append(eachToken.substring(1));
+                    outputString.append(" ");
+                }
+                return outputString.toString();
+            }
+
+            @Override
+            public boolean isEndMarker(String element) {
+                return element == null || END_OF_FILE.equals(element);
             }
         };
         return factory;
@@ -98,7 +125,7 @@ public class Launcher {
 
                 @Override
                 public void consume(String data) {
-                    if (!endOfFileMarker.equals(data))
+                    if (!END_OF_FILE.equals(data))
                         try {
                             writer.append(data);
                             writer.newLine();
@@ -110,7 +137,7 @@ public class Launcher {
 
                 @Override
                 public boolean isEndMarker(String data) {
-                    return data == null || endOfFileMarker.equals(data);
+                    return data == null || END_OF_FILE.equals(data);
                 }
             };
         } catch (Exception e) {

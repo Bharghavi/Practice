@@ -4,6 +4,7 @@ import com.bhar.CacheLibrary.*;
 import com.bhar.LoggerLibrary.FileLogger;
 import com.bhar.LoggerLibrary.LogClient;
 import com.bhar.LoggerLibrary.Logger;
+import com.bhar.MultiThreading.MultiThreadLauncher;
 import com.bhar.ProducerConsumer.Launcher;
 
 import java.io.File;
@@ -77,6 +78,9 @@ public class MainClass {
         logClient.logWarning("W.line 2");
         logClient.logWarning("W.line 3");
         logClient.logWarning("W.line 4");*/
+
+        /*MultiThreadLauncher multiThreadLauncher = new MultiThreadLauncher("input.txt", "output.txt", 2);
+        multiThreadLauncher.launch();*/
 
         Launcher launcher = new Launcher("input.txt", "output.txt");
         launcher.launch();

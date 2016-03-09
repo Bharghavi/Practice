@@ -53,7 +53,7 @@ public class Queue<T> {
         return marker.data;
     }
 
-    public T deque(){
+    public T deque()  {
     	if (!this.hasData())
     		return null;
         LLNode<T> oldHead = head;
@@ -117,6 +117,10 @@ public class Queue<T> {
             currentNode = currentNode.next;
         }
         return queueSize>=size;
+    }
+
+    public boolean isEmpty() {
+        return head == null;
     }
 
 }
