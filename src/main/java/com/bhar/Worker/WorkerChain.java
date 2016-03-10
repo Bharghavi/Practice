@@ -1,7 +1,5 @@
 package com.bhar.Worker;
 
-import com.bhar.TreesAndGraph.Queue;
-
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -11,17 +9,17 @@ import java.util.Map;
  */
 public class WorkerChain<T, R> {
 
-    LinkedHashMap<Worker<T, R>, Integer> workerMap;
+    LinkedHashMap<Worker, Integer> workerMap;
 
-    public WorkerChain(LinkedHashMap<Worker<T, R>, Integer> workerMap) {
+    public WorkerChain(LinkedHashMap<Worker, Integer> workerMap) {
         this.workerMap = workerMap;
     }
 
     public void start() {
-        Iterator<Map.Entry<Worker<T, R>, Integer>> iterator = workerMap.entrySet().iterator();
+        Iterator<Map.Entry<Worker, Integer>> iterator = workerMap.entrySet().iterator();
 
         while (iterator.hasNext()) {
-            Map.Entry<Worker<T, R>, Integer> each = iterator.next();
+            Map.Entry<Worker, Integer> each = iterator.next();
             each.getKey().start(each.getValue());
         }
     }
@@ -31,32 +29,32 @@ public class WorkerChain<T, R> {
         DataInputStore<T> dataInputStore;
         DataOutputStore<R> dataOutputStore;
 
-        LinkedHashMap<Worker<T, R>, Integer> workerMap;
+        LinkedHashMap<Worker, Integer> workerMap;
 
         public Builder(DataInputStore<T> inputStore, DataOutputStore<R> outputStore) {
             this.dataInputStore = inputStore;
             this.dataOutputStore = outputStore;
-            workerMap = new LinkedHashMap<Worker<T, R>, Integer>();
+            workerMap = new LinkedHashMap<Worker, Integer>();
         }
 
-        public Builder addTransformation(Transformer<T, R> transformer, int numberOfThreads)
+        public WorkerChain addTransformation(Transformer transformer, int numberOfThreads)
         {
-            Worker<T, R> worker;
+            Worker worker;
             if (workerMap.isEmpty()) {
                 worker = new Worker(dataInputStore, dataOutputStore, transformer);
             } else {
-                Worker<T, R> lastWorker = getLastEntryFrom(workerMap);
+                Worker lastWorker = getLastEntryFrom(workerMap);
                 QueueStore<R> queueStore = new QueueStore<R>();
                 lastWorker.outputStore = queueStore;
                 worker = new Worker(queueStore, dataOutputStore, transformer);
             }
             workerMap.put(worker, numberOfThreads);
-            return this;
+            return new WorkerChain(workerMap);
         }
 
-        private Worker<T, R> getLastEntryFrom(LinkedHashMap<Worker<T, R>, Integer> workerMap) {
-            Iterator<Worker<T, R>> iterator = workerMap.keySet().iterator();
-            Worker<T, R> lastWorker = null;
+        private Worker getLastEntryFrom(LinkedHashMap<Worker, Integer> workerMap) {
+            Iterator<Worker> iterator = workerMap.keySet().iterator();
+            Worker lastWorker = null;
             while (iterator.hasNext())
                 lastWorker = iterator.next();
             return lastWorker;

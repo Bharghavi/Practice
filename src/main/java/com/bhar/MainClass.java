@@ -6,6 +6,7 @@ import com.bhar.LoggerLibrary.LogClient;
 import com.bhar.LoggerLibrary.Logger;
 import com.bhar.MultiThreading.MultiThreadLauncher;
 import com.bhar.ProducerConsumer.Launcher;
+import com.bhar.Worker.WorkerLauncher;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,7 +83,7 @@ public class MainClass {
         /*MultiThreadLauncher multiThreadLauncher = new MultiThreadLauncher("input.txt", "output.txt", 2);
         multiThreadLauncher.launch();*/
 
-        Launcher launcher = new Launcher("input.txt", "output.txt");
+        WorkerLauncher launcher = new WorkerLauncher("input.txt", "output.txt");
         launcher.launch();
     }
 }

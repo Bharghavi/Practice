@@ -17,13 +17,19 @@ public class Worker<T, R> implements Runnable {
 
     @Override
     public void run() {
-        T input = inputStore.getData();
-        R output;
-        if (transformer.isEndMarker(input))
-          output = transformer.getEndMarker();
-        else
-         output = transformer.transform(input);
-        outputStore.put(output);
+        while (true) {
+            T input = inputStore.getData();
+            R output;
+            if (transformer.isEndMarker(input)) {
+                output = transformer.getEndMarker();
+                outputStore.put(output);
+                break;
+            }
+            else {
+                output = transformer.transform(input);
+                outputStore.put(output);
+            }
+        }
     }
 
     public void start(int numberOfThreads) {
