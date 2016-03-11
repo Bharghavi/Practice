@@ -3,8 +3,8 @@ package com.bhar.TreesAndGraph;
 /**
  * Created by amrk7 on 2/2/2016.
  */
-public class Node {
-    public int data;
+public class Node<T> {
+    public T data;
     public Node left;
     public Node right;
 
@@ -18,11 +18,11 @@ public class Node {
         return data == node.data;
     }
 
-    @Override
-    public int hashCode() {
-        int result = data;
+   /* @Override
+    public T hashCode() {
+        T result = data;
         result = 31 * result + left.hashCode();
         result = 31 * result + right.hashCode();
         return result;
-    }
+    }*/
 }

@@ -9,15 +9,15 @@ import java.util.*;
 /**
  * Created by amrk7 on 2/2/2016.
  */
-public class BinaryTree {
+public class BinaryTree<T> {
     private Node rootNode;
 
-    public BinaryTree(int root) {
-        rootNode = new Node();
+    public BinaryTree(T root) {
+        rootNode = new Node<T>();
         rootNode.data = root;
     }
 
-    public Node getRoot() {
+    public Node<T> getRoot() {
         return rootNode;
     }
 
@@ -341,8 +341,8 @@ public class BinaryTree {
         return result;
     }
 
-    public static Node constructTree(List<Node> postOrder, List<Node> inOrder) {
-        Node result = new Node();
+    public static Node<Integer> constructTree(List<Node<Integer>> postOrder, List<Node<Integer>> inOrder) {
+        Node<Integer> result = new Node<Integer>();
         result.data = postOrder.get(postOrder.size()-1).data;
         int resultIndex = getIndexOf(result.data, inOrder);
 
@@ -352,23 +352,23 @@ public class BinaryTree {
         if (resultIndex == 0) {
             result.left = null;
         } else {
-            List<Node> inOrderSubset = inOrder.subList(0,resultIndex);
-            List<Node> postOrderSubset = postOrder.subList(0, inOrderSubset.size());
+            List<Node<Integer>> inOrderSubset = inOrder.subList(0,resultIndex);
+            List<Node<Integer>> postOrderSubset = postOrder.subList(0, inOrderSubset.size());
             result.left = constructTree(postOrderSubset, inOrderSubset);
         }
 
         if (resultIndex == inOrder.size()-1) {
             result.right = null;
         } else {
-            List<Node> inOrderSubset = inOrder.subList(resultIndex+1, inOrder.size());
-            List<Node> postOrderSubset = postOrder.subList(resultIndex, postOrder.size()-1);
+            List<Node<Integer>> inOrderSubset = inOrder.subList(resultIndex+1, inOrder.size());
+            List<Node<Integer>> postOrderSubset = postOrder.subList(resultIndex, postOrder.size()-1);
             result.right = constructTree(postOrderSubset, inOrderSubset);
         }
 
         return result;
     }
 
-    private static int getIndexOf(int data, List<Node> list) {
+    private static int getIndexOf(int data, List<Node<Integer>> list) {
         for (int i =0 ; i<list.size(); i++){
             if (list.get(i).data == data)
                 return i;
