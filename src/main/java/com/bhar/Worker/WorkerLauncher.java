@@ -19,7 +19,7 @@ public class WorkerLauncher {
 
     public void launch() {
         try {
-            new WorkerChain.Builder<String, Integer>(getFileInputStore(), getFileOutputStore()).addTransformation(upperCaseTransformer(), 5).start();
+            new WorkerChain.Builder<String, String>(getFileInputStore(), getFileOutputStore()).addTransformation(upperCaseTransformer(), 5).start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -49,15 +49,15 @@ public class WorkerLauncher {
         return fileInputStore;
     }
 
-    private DataOutputStore<Integer> getFileOutputStore() throws IOException {
-        DataOutputStore<Integer> fileOutputStore = new DataOutputStore<Integer>() {
+    private DataOutputStore<String> getFileOutputStore() throws IOException {
+        DataOutputStore<String> fileOutputStore = new DataOutputStore<String>() {
 
             File file = new File(outputFileName);
             BufferedWriter writer = new BufferedWriter(new FileWriter(file, true));
 
             @Override
-            public void put(Integer data) {
-                if (data != -1)
+            public void put(String data) {
+                if (!END_OF_FILE.equals(data))
                     try {
                         writer.append(String.valueOf(data));
                         writer.newLine();

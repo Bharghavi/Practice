@@ -159,7 +159,7 @@ public class BinaryTree<T> {
     private Node findNode(int data){
         Queue<Node> queue = new Queue<Node>(rootNode);
         while (queue.hasData()) {
-            Node current = queue.deque();
+            Node<Integer> current = queue.deque();
             if (current.data == data)
                 return current;
             queue.enque(current.left);
